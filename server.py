@@ -6,20 +6,23 @@ sock.bind(('localhost', 8080)) # gethostname is not too important here as we alr
 sock.listen(10) # The number mentions how many connections to accept
 
 print('Server is listening at ', sock.getsockname())
-name = input('Enter your name: ')
+conn, address = sock.accept()
+print("Connection established")
+print("Connected to : ", address)
+name = input('Name: ')
+conn.send(name.encode())
+rec = conn.recv(2048).decode('ascii')
+print(rec,'has joined')
 while True:
-    resp = ''
-    conn, address = sock.accept()
-    print("Connection established")
-    print("Connected to : ", address)
     try:
-        resp = conn.recv(2048).decode('ascii')
-        print(resp,"has joined")
-        sent = conn.send(name.encode())# sends in byte form not in string
-        print(sent)
+        msg = input('Server: ')
+        sent = conn.send(msg.encode())# sends in byte form not in string
+        message = conn.recv(2048).decode('ascii')
+        print(rec,':',message)
         conn.close()
     except Exception as e:
         print(e)
+
 
 
 
